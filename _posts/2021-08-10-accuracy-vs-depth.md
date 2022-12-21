@@ -1,12 +1,12 @@
 ---
 layout: post
 title:  "Oxford Nanopore accuracy vs depth"
-date:   2021-08-10 15:13:57 +1100
+date:   2021-08-10
 ---
 
 ## Introduction
 
-This page shows the results of a mini-study I did examining the effect of Nanopore read depth on sequence accuracy. It should help with the common question of 'How deep should I sequence?'
+This post shows the results of a mini-study I did examining the effect of Nanopore read depth on sequence accuracy. It should help with the common question of 'How deep should I sequence?'
 
 The inspiration for this was a particularly deep whole-genome Nanopore sequencing run we ([the Holt Lab](https://holtlab.net/), in particular [Louise](https://twitter.com/JuddLmj) and [Kelly](https://twitter.com/KelWyres)) did on a _Klebsiella_ isolate. The resulting reads were long (N50 of ~40 kbp) and very deep (about 800×), and therefore provided a nice opportunity to experiment with assemblies of varying depth.
 

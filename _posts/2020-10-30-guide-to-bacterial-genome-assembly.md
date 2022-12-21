@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Choose-your-own-adventure guide to bacterial genome assembly"
-date:   2021-10-19 15:13:57 +1100
+date:   2020-10-30
 ---
 
 <img align="right" width="245" src="/assets/images/choose_your_own_adventure.jpg" alt="Choose Your Own Adventure cover">
@@ -14,6 +14,19 @@ I have written this guide with the assumption that you already have reads for yo
 
 Ready to begin? [Start at step 1](#1-input-reads).
 <br><br><br>
+
+
+
+
+## History
+
+This guide was originally posted on the [Trycycler wiki](https://github.com/rrwick/Trycycler/wiki) in October 2020, and there have only been a few changes since then:
+* November 2020: added comments about PacBio HiFi reads.
+* February 2021: removed Shasta as a long-read assembler (too many errors).
+* October 2021: changed short-read polishing instructions from Pilon to Polypolish/POLCA.
+
+<br>
+
 
 
 
@@ -408,7 +421,7 @@ Regarding long-read sequencing depth, I'll say roughly the same thing as for sho
 
 Both Oxford Nanopore and PacBio are single-molecule sequencers: each read comes from one molecule of DNA. This means that your read lengths are largely dependent on the length of your DNA molecules. So if your DNA gets sheared during extraction/prep (bead-beating, lots of pipetting, freeze/thaw cycles, etc.) your reads will be shorter. Conversely, a gentle extraction/prep can yield very long reads. Some researchers have [designed protocols for ultra-long reads](https://www.nature.com/articles/nbt.4060), but this is probably not necessary for most bacterial genomes where repeats aren't as bad as in eukaryotes. However, longer is generally better, so I would recommend you aim for the longest reads you reasonably can. The one caveat to this regards small plasmids.
 
-Small plasmids can be a problem with long-read sequencing. Consider a genome with a 3 kbp plasmid where DNA was extracted for Nanopore sequencing with a typical length of 20 kbp. This means that the 3 kbp plasmid is likely to be completely intact and still circular! A [ligation-based prep](https://store.nanoporetech.com/sample-prep/ligation-sequencing-kit.html) would then fail to sequence this plasmid because there are no blunt DNA ends on which adapters can be ligated. For this reason, small plasmids can be very underrepresented in long-read sets. Shearing your DNA might solve the problem, but it would result in shorter reads that could compromise the rest of your assembly. A better solution is to use a [rapid prep](https://store.nanoporetech.com/catalog/product/view/id/226/s/rapid-barcoding-kit/) instead, as that doesn't rely on blunt ends. Or you could do hybrid sequencing (see below) and rely on Illumina reads to capture the small plasmid. [We recently wrote a paper that explores this topic in more detail](https://www.biorxiv.org/content/10.1101/2021.02.21.432182v1), so take a look if you're interested.
+Small plasmids can be a problem with long-read sequencing. Consider a genome with a 3 kbp plasmid where DNA was extracted for Nanopore sequencing with a typical length of 20 kbp. This means that the 3 kbp plasmid is likely to be completely intact and still circular! A [ligation-based prep](https://store.nanoporetech.com/sample-prep/ligation-sequencing-kit.html) would then fail to sequence this plasmid because there are no blunt DNA ends on which adapters can be ligated. For this reason, small plasmids can be very underrepresented in long-read sets. Shearing your DNA might solve the problem, but it would result in shorter reads that could compromise the rest of your assembly. A better solution is to use a [rapid prep](https://store.nanoporetech.com/catalog/product/view/id/226/s/rapid-barcoding-kit/) instead, as that doesn't rely on blunt ends. Or you could do hybrid sequencing (see below) and rely on Illumina reads to capture the small plasmid. [We recently wrote a paper that explores this topic in more detail](https://doi.org/10.1099/mgen.0.000631), so take a look if you're interested.
 
 
 #### Hybrid sequencing
