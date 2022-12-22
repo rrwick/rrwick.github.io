@@ -2,6 +2,7 @@
 layout: post
 title:  "Oxford Nanopore accuracy vs depth"
 date:   2021-08-10
+author: Ryan Wick
 ---
 
 ## Introduction

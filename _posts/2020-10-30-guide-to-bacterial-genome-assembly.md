@@ -1,7 +1,9 @@
 ---
-layout: post
-title:  "Choose-your-own-adventure guide to bacterial genome assembly"
-date:   2020-10-30
+layout:        post
+title:         "Choose-your-own-adventure guide to bacterial genome assembly"
+date:          2020-10-30
+modified_date: 2021-10-19
+author:        Ryan Wick
 ---
 
 <img align="right" width="245" src="/assets/images/choose_your_own_adventure.jpg" alt="Choose Your Own Adventure cover">
