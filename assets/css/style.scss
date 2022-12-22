@@ -5,8 +5,3 @@
 @import
   "minima/skins/{{ site.minima.skin | default: 'classic' }}",
   "minima/initialize";
-
-img {
-  max-width: 100%;
-  padding: 10px;
-}

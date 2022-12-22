@@ -6,7 +6,12 @@ modified_date: 2021-10-19
 author:        Ryan Wick
 ---
 
-<img align="right" width="245" src="/assets/images/choose_your_own_adventure.jpg" alt="Choose Your Own Adventure cover">
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7471199.svg)](https://doi.org/10.5281/zenodo.7471199)
+
+
+
+
+<img align="right" width="245" style="padding:10px" src="/assets/images/choose_your_own_adventure.jpg" alt="Choose Your Own Adventure cover">
 
 Welcome to this choose-your-own-adventure guide for assembling a bacterial genome! It will lead you to the best (in my opinion) strategy for getting a nice whole-genome assembly, based on what kind of reads you have and what your priorities are. And unlike in the [classic book series](https://en.wikipedia.org/wiki/Choose_Your_Own_Adventure), none of your choices will result in your untimely death!
 
@@ -22,7 +27,7 @@ Ready to begin? [Start at step 1](#1-input-reads).
 
 ## History
 
-This guide was originally posted on the [Trycycler wiki](https://github.com/rrwick/Trycycler/wiki) in October 2020, and there have only been a few changes since then:
+This guide was originally posted on the [Trycycler wiki](https://github.com/rrwick/Trycycler/wiki) in October 2020, and there have been a few changes since then:
 * November 2020: added comments about PacBio HiFi reads.
 * February 2021: removed Shasta as a long-read assembler (too many errors).
 * October 2021: changed short-read polishing instructions from Pilon to Polypolish/POLCA.
