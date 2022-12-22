@@ -26,8 +26,7 @@ author:
 
 description: a blog for miscellaneous bioinformatics stuff
 
-baseurl: "" # the subpath of your site, e.g. /blog
-url: "" # the base hostname & protocol for your site, e.g. http://example.com
+url: https://rrwick.github.io
 
 # Build settings
 theme: minima
