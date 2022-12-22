@@ -5,6 +5,11 @@ date:   2021-08-10
 author: Ryan Wick
 ---
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7471221.svg)](https://doi.org/10.5281/zenodo.7471221)
+
+
+
+
 ## Introduction
 
 This post shows the results of a mini-study I did examining the effect of Nanopore read depth on sequence accuracy. It should help with the common question of 'How deep should I sequence?'
