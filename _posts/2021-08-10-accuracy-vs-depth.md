@@ -51,7 +51,7 @@ Things to note:
 
 ### Trycycler and Trycycler+Medaka
 
-I also wanted to test Trycycler in a similar manner, but Trycycler assemblies take a bit more work – unlike Flye assemblies, they are not fully automated. I did not have the time to assemble all 400 read subsets with Trycycler! Instead, I performed 15 Trycycler assemblies (following the [[How to run Trycycler]] instructions), ranging from 36× to 400× depth. These were then polished with Medaka and assessed in the same way as the Flye assemblies.
+I also wanted to test Trycycler in a similar manner, but Trycycler assemblies take a bit more work – unlike Flye assemblies, they are not fully automated. I did not have the time to assemble all 400 read subsets with Trycycler! Instead, I performed 15 Trycycler assemblies (following the [How to run Trycycler](https://github.com/rrwick/Trycycler/wiki/How-to-run-Trycycler) instructions), ranging from 36× to 400× depth. These were then polished with Medaka and assessed in the same way as the Flye assemblies.
 
 Here are the same plots shown above, now with Trycycler and Trycycler+Medaka points added:
 
@@ -60,7 +60,7 @@ Here are the same plots shown above, now with Trycycler and Trycycler+Medaka poi
 <p align="center"><img src="/assets/images/accuracy_worst_100bp_all.png" alt="Worst-100-bp results: all" width="80%"></p>
 
 Interesting things:
-* Trycycler gave a huge accuracy boost over Flye: ~Q39 vs ~Q35.5. This equates to about half the total number of errors. This is because of the multi-assembler input used by Trycycler (Flye, Miniasm+Minipolish and Raven, see [[Generating assemblies]]). I tried making a couple Trycycler assemblies using only Flye assemblies as input, and this boost went away.
+* Trycycler gave a huge accuracy boost over Flye: ~Q39 vs ~Q35.5. This equates to about half the total number of errors. This is because of the multi-assembler input used by Trycycler (Flye, Miniasm+Minipolish and Raven, see [Generating assemblies](https://github.com/rrwick/Trycycler/wiki/Generating-assemblies)). I tried making a couple Trycycler assemblies using only Flye assemblies as input, and this boost went away.
 * Trycycler+Medaka assemblies don't have much of an accuracy advantage over a good Flye+Medaka assembly. I.e. assuming there isn't a big error which Medaka can't fix, a Medaka-polished assembly is equivalently good whether the input was from Flye or Trycycler.
 * Trycycler assemblies reliably have a very good worst-100-bp identity. This is one of the main things Trycycler was designed to do, so I was happy to see this result!
 
