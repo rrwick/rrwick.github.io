@@ -165,7 +165,7 @@ This will remove any reads shorter than 1 kbp and also exclude the worst 5% of r
 
 I usually keep QC light for two reasons, the first being small plasmids. Filtlong considers shorter reads 'bad' and longer reads 'good' so more aggressive filtering will leave you with few reads on the short end of the spectrum. For most of the genome this is probably a good thing, but it can be disastrous for small plasmids. For example, if you have a big read set that you've aggressively filtered with Filtlong, you might be left with no reads smaller than 10 kbp. If that genome has a small plasmid 4 kbp in size, it will now be gone from the read set!
 
-The second reason I keep QC light is that deep long-read sets can benefit assembly. This is especially true if you end up using Trycycler, where deeper sets allow for more independent input assemblies (see [[Generating assemblies]]). Other assemblers handle deep read sets just fine too, so when in doubt, aim for deep.
+The second reason I keep QC light is that deep long-read sets can benefit assembly. This is especially true if you end up using Trycycler, where deeper sets allow for more independent input assemblies (see [Generating assemblies on the Trycycler wiki](https://github.com/rrwick/Trycycler/wiki/Generating-assemblies)). Other assemblers handle deep read sets just fine too, so when in doubt, aim for deep.
 
 That being said, if you have an _extremely_ deep long-read set (e.g. 500×) then more aggressive QC is warranted. Just be careful about not losing all your shorter reads if small plasmids are important to you. Filtlong has some options which might help, like `--mean_q_weight` which can make it prioritise quality over length and `--min_mean_q` which can set a hard threshold for read quality.
 
@@ -229,7 +229,7 @@ When your Flye assembly is done:
 
 ## 11: Trycycler assembly
 
-Running [Trycycler](https://github.com/rrwick/Trycycler) is more involved than other approaches, but it can yield the best assemblies. (Disclaimer: it's my own tool so I may be biased :smile:) It also allows you to clearly see whether or not your read set is sufficient for a reliable assembly (via the [[clustering step|Clustering-contigs]]). I won't say more about it here – you are on the Trycycler wiki after all, so read more about it on the other pages!
+Running [Trycycler](https://github.com/rrwick/Trycycler) is more involved than other approaches, but it can yield the best assemblies. (Disclaimer: it's my own tool so I may be biased :smile:) It also allows you to clearly see whether or not your read set is sufficient for a reliable assembly (via the [clustering step](https://github.com/rrwick/Trycycler/wiki/Clustering-contigs)). I won't say more about it here – read more about it on [the Trycycler wiki](https://github.com/rrwick/Trycycler/wiki).
 
 When your Trycycler assembly is done:
 * If sequence accuracy is not particularly important to your analyses, then a Trycycler assembly is probably enough and you're finished! __THE END__
@@ -259,7 +259,7 @@ I therefore think it's appropriate to jump right to the platform-specific polish
 
 [Medaka](https://github.com/nanoporetech/medaka) is Oxford Nanopore's polishing tool, and it seems to work very well for cleaning up a Nanopore-only assembly. Conveniently, it operates on FASTQ reads and so does not require raw data. It's also pretty fast!
 
-If you did a Trycycler assembly, you can do Medaka polishing on a per-replicon basis (because Trycycler sorts reads by replicon). Read more about that on the [[Polishing after Trycycler]] page. If you didn't run Trycycler, you can run it on your entire assembly like this:
+If you did a Trycycler assembly, you can do Medaka polishing on a per-replicon basis (because Trycycler sorts reads by replicon). Read more about that on the [Polishing page of the Trycycler wiki](https://github.com/rrwick/Trycycler/wiki/Polishing-after-Trycycler). If you didn't run Trycycler, you can run it on your entire assembly like this:
 ```bash
 medaka_consensus -i long.fastq.gz -d input_assembly.fasta -o medaka -m r941_min_high_g360
 ```
@@ -325,7 +325,7 @@ Which of the following best applies to you?
 
 ## 17: Unicycler hybrid assembly
 
-[Unicycler](https://github.com/rrwick/Unicycler) is getting a bit long in the tooth, but its hybrid assembly approach is still appropriate for cases where long reads are limited ([[read more on Trycycler's FAQ|FAQ-and-miscellaneous-tips#should-i-use-unicycler-or-trycycler-to-assemble-my-bacterial-genome]]).
+[Unicycler](https://github.com/rrwick/Unicycler) is getting a bit long in the tooth, but its hybrid assembly approach is still appropriate for cases where long reads are limited ([read more on Trycycler's FAQ](https://github.com/rrwick/Trycycler/wiki/FAQ-and-miscellaneous-tips#should-i-use-unicycler-or-trycycler-to-assemble-my-bacterial-genome)).
 
 Unicycler works by first generating a short-read assembly graph and then using long reads to scaffold the graph to completion. It performs best when the short reads are deep and have even coverage, as this makes for a clean graph on which it can work. Not many long reads are then required – as little as 10× can sometimes be enough.
 
@@ -367,7 +367,7 @@ If both your short-read and long-read sets are shallow, then you're in a tough s
 
 Even after long-read polishing, there are still probably some errors in your bacterial genome, mainly homopolymer-length errors. Since Illumina reads don't suffer from the same types of errors, you can use short-read polishing to clean these up and get a very accurate assembly.
 
-[Polypolish](https://github.com/rrwick/Polypolish) is a tool I've written for this purpose, and I also quite like [POLCA](https://github.com/alekseyzimin/masurca#polca). I've written more about short-read polishing in Trycycler's wiki, so follow the instructions there: [[Polishing after Trycycler|Polishing-after-Trycycler#short-read-polishing]].
+[Polypolish](https://github.com/rrwick/Polypolish) is a tool I've written for this purpose, and I also quite like [POLCA](https://github.com/alekseyzimin/masurca#polca). I've written more about short-read polishing in Trycycler's wiki, so follow the instructions there: [Polishing after Trycycler](https://github.com/rrwick/Trycycler/wiki/Polishing-after-Trycycler).
 
 Can short-read polishing make your genome perfect, i.e. with absolutely no errors? If your read sets were good and there were no complications along the way, then I think this is definitely possible but not guaranteed. The most challenging errors to fix are those in repeats, and they can be minimised by getting your assembly as good as possible before short-read polishing. This is why long-read polishing is important (e.g. Trycyler+Medaka+Polypolish+POLCA should do better than Trycycler+Polypolish+POLCA).
 
