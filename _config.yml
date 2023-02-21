@@ -43,6 +43,7 @@ minima:
   social_links:
     - { platform: github,  user_url: "https://github.com/rrwick" }
     - { platform: twitter, user_url: "https://twitter.com/rrwick" }
+    - { platform: mastodon, user_url: "https://genomic.social/@rrwick" }
     - { platform: google_scholar, user_url: "https://scholar.google.com.au/citations?user=Bwv5CQYAAAAJ" }
 
 # Exclude from processing.
