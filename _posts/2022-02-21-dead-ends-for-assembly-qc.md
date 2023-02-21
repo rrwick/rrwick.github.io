@@ -1,9 +1,11 @@
 ---
 layout: post
-title:  "Dead end count for QC of short-read assemblies"
+title:  "Dead-end count for QC of short-read assemblies"
 date:   2023-02-21
 author: Ryan Wick
 ---
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7662683.svg)](https://doi.org/10.5281/zenodo.7662683)
 
 
 
@@ -28,17 +30,17 @@ As you can see, a good N50 value is highly dependent on the species, e.g. the ba
 
 ## Tools
 
-[gfastats](https://github.com/vgl-hub/gfastats) is a tool that can report graph information, and you can grep for the dead end count:
+[gfastats](https://github.com/vgl-hub/gfastats) is a tool that can report graph information, and you can grep for the dead-end count:
 ```bash
 gfastats assembly.gfa | grep "dead ends" | grep -oP "\d+"
 ```
 
-[Bandage](https://github.com/rrwick/Bandage) (or the active fork [BandageNG](https://github.com/asl/BandageNG)) can be [run on the command line](https://github.com/rrwick/Bandage/wiki/Command-line) to give some assembly graph information, and you can grep for the dead end count:
+[Bandage](https://github.com/rrwick/Bandage) (or the active fork [BandageNG](https://github.com/asl/BandageNG)) can be [run on the command line](https://github.com/rrwick/Bandage/wiki/Command-line) to give some assembly graph information, and you can grep for the dead-end count:
 ```bash
 Bandage info assembly.gfa | grep "Dead ends" | grep -oP "\d+"
 ```
 
-If you have [Unicycler](https://github.com/rrwick/Unicycler) installed for your Python instance, you can run this Python one-liner to get the dead end count:
+If you have [Unicycler](https://github.com/rrwick/Unicycler) installed for your Python instance, you can run this Python one-liner to get the dead-end count:
 ```bash
 python3 -c "import sys; import unicycler.assembly_graph; print(unicycler.assembly_graph.AssemblyGraph(sys.argv[1], 0).total_dead_end_count())" assembly.gfa
 ```
@@ -47,7 +49,7 @@ python3 -c "import sys; import unicycler.assembly_graph; print(unicycler.assembl
 
 While the above options all work, I wasn't completely satisfied with any of them. gfastats randomly hangs indefinitely (~1/20 times I run it on my MacBook and ~1/200 times I run it on my Linux server), making it inconvenient to run on large datasets. Bandage is primarily a GUI program and can be awkward to run on servers. And Unicycler requires an ugly Python one-liner.
 
-So I decided to write a dedicated GFA dead end counting tool: [GFA-dead-end-counter](https://github.com/rrwick/GFA-dead-end-counter). It's very fast because it's written in [Rust](https://www.rust-lang.org) and only does one thing (count dead ends).
+So I decided to write a dedicated GFA dead-end counting tool: [GFA-dead-end-counter](https://github.com/rrwick/GFA-dead-end-counter). It's very fast because it's written in [Rust](https://www.rust-lang.org) and only does one thing (count dead ends).
 
 Run it like this:
 ```bash
