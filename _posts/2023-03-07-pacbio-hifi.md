@@ -65,7 +65,7 @@ My fantasy money-is-no-object experiment would be to take 100+ diverse bacterial
 
 [^1]: The HiFi reads were >4000× deep and the CLR reads were >12000× deep – see [Table 1](https://academic.oup.com/view-large/304735460).
 
-[^2]: See my [perfect bacterial genome paper]((https://preprints.scielo.org/index.php/scielo/preprint/view/5053/version/5357)) and its [accompanying tutorial](https://github.com/rrwick/Perfect-bacterial-genome-tutorial/wiki) for more details on the methods I use.
+[^2]: See my [perfect bacterial genome paper](https://doi.org/10.1371/journal.pcbi.1010905) and its [accompanying tutorial](https://github.com/rrwick/Perfect-bacterial-genome-tutorial/wiki) for more details on the methods I use.
 
 [^3]: If all goes well in a Trycycler assembly, the remaining errors (e.g. homopolymer-length errors) should be evenly distributed around the genome. So when polishers (e.g. Medaka or Polypolish) make a lot of changes in small region, that's a sign that something is wrong.
 
