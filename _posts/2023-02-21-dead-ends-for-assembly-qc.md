@@ -105,7 +105,7 @@ It's also worth noting that dead-end-count is probably _not_ a good QC metric fo
 
 ## Footnotes
 
-[^1]: While [Unicycler](https://github.com/rrwick/Unicycler) is better know as a hybrid (short+long) assembler, it can do short-read-only assembly as well. In this mode, it does lots of assemblies with [SPAdes](https://github.com/ablab/spades) using a wide _k_-mer spread, chooses the best assembly, then performs some graph clean-up like trimming of overlaps. You can think of short-read-only Unicycler as SPAdes plus a few bells and whistles.
+[^1]: While [Unicycler](https://github.com/rrwick/Unicycler) is better known as a hybrid (short+long) assembler, it can do short-read-only assembly as well. In this mode, it does lots of assemblies with [SPAdes](https://github.com/ablab/spades) using a wide _k_-mer spread, chooses the best assembly, then performs some graph clean-up like trimming of overlaps. You can think of short-read-only Unicycler as SPAdes plus a few bells and whistles.
 
 [^2]: N50 length is defined as the length where all contigs of this size and larger make up at least half the total bases in the assembly. It can be calculated by sorting contigs from large to small and doing a cumulative sum until you reach half the assembly size – the size of the contig which gets you over this threshold is the assembly N50. It can be more useful than mean contig size because it's not as affected by small contigs. For example, adding 100 tiny contigs to an assembly will greatly reduce the mean contig size but will have little effect on the N50.
 
