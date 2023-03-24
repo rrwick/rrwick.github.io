@@ -40,6 +40,7 @@ remote_theme: jekyll/minima
 
 minima:
   skin: auto
+  date_format: "%-d %b %Y"
   social_links:
     - { platform: github,  user_url: "https://github.com/rrwick" }
     - { platform: twitter, user_url: "https://twitter.com/rrwick" }
