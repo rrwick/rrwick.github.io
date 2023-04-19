@@ -27,7 +27,7 @@ Googling led me to some solutions based on the [column](https://man7.org/linux/m
 
 ## Prerequisites
 
-After some experimenting, I landed on an approach that uses [xsv](https://github.com/BurntSushi/xsv) to space the columns and [less](https://www.greenwoodsoftware.com/less) to view the result. But I needed to build both those tools from source: xsv has [a column alignment bug](https://github.com/BurntSushi/xsv/issues/151) that is fixed by using the latest version of the [csv](https://crates.io/crates/csv) crate, and only recent versions of less have the [header](https://unix.stackexchange.com/a/739599/316196) option.
+After some experimenting, I landed on an approach that uses [xsv](https://github.com/BurntSushi/xsv) to space the columns[^2] and [less](https://www.greenwoodsoftware.com/less) to view the result. But I needed to build both those tools from source: xsv has [a column alignment bug](https://github.com/BurntSushi/xsv/issues/151) that is fixed by using the latest version of the [csv](https://crates.io/crates/csv) crate, and only recent versions of less have the [header](https://unix.stackexchange.com/a/739599/316196) option.
 
 Assuming you have [Rust](https://www.rust-lang.org/) and command-line development tools (e.g. make and gcc) installed, here is how you can build xsv and less:
 ```bash
@@ -57,7 +57,7 @@ echo 'export PATH=/opt/homebrew/opt/grep/libexec/gnubin:"$PATH"' >> ~/.zshrc
 
 ## Bash functions
 
-I wrote[^2] a function named `tv` (for 'table viewer') and put it in my `.zshrc` file. Here it is, with an abundance of explanatory comments:
+I wrote[^3] a function named `tv` (for 'table viewer') and put it in my `.zshrc` file. Here it is, with an abundance of explanatory comments:
 ```bash
 # Table viewer: a Bash function to view TSV/CSV files/data on the command line
 tv () {
@@ -116,15 +116,15 @@ tv () {
 }
 ```
 
-And a few more related functions:
-* `pv` for [PAF files](https://github.com/lh3/miniasm/blob/master/PAF.md)
-* `sv` for [SAM files](https://samtools.github.io/hts-specs/SAMv1.pdf)
-* `vv` for [VCF files](https://samtools.github.io/hts-specs/VCFv4.2.pdf)
+And a few more related functions[^4]:
+* `pafv` for [PAF files](https://github.com/lh3/miniasm/blob/master/PAF.md)
+* `samv` for [SAM files](https://samtools.github.io/hts-specs/SAMv1.pdf)
+* `varv` for [VCF files](https://samtools.github.io/hts-specs/VCFv4.2.pdf)
 * `body` is a function I got from [Stack Exchange](https://unix.stackexchange.com/a/11859/316196) that lets you pipe data while leaving the first line alone – very useful for leaving the header line in place when sorting or filtering.
 
 ```bash
 # PAF viewer: a Bash function to view PAF files/data on the command line
-pv () {
+pafv () {
     if [[ -t 0 && ! -e $1 ]]; then
         echo "Error: file '$1' does not exist" >&2
         return 1
@@ -147,7 +147,7 @@ pv () {
 
 
 # SAM viewer: a Bash function to view SAM/BAM files/data on the command line
-sv () {
+samv () {
     if [[ -t 0 && ! -e $1 ]]; then
         echo "Error: file '$1' does not exist" >&2
         return 1
@@ -170,7 +170,7 @@ sv () {
 
 
 # VCF viewer: a Bash function to view VCF files/data on the command line
-vv () {
+varv () {
     if [[ -t 0 && ! -e $1 ]]; then
         echo "Error: file '$1' does not exist" >&2
         return 1
@@ -207,7 +207,7 @@ cat data.tsv | tv
 tv < data.tsv
 ```
 
-Compressed files cannot be viewed directly[^3], so you must use stdin to view compressed files:
+Compressed files cannot be viewed directly[^5], so you must use stdin to view compressed files:
 ```bash
 tv data.tsv.gz                # will NOT work
 zcat data.tsv.gz | tv         # will work
@@ -228,13 +228,13 @@ cat data.tsv | body sort | tv
 cat data.tsv | body awk '$1 > 1000' | tv
 ```
 
-`pv`, `sv` and `vv` add some pre-processing specific to bioinformatics formats:
+`pafv`, `samv` and `varv` add some pre-processing specific to bioinformatics formats:
 ```bash
-pv alignments.paf
-cat alignments.paf | awk '$10/$11 > 0.9' | pv
-sv alignments.sam
-samtools view alignments.bam | sv
-vv variants.vcf
+pafv alignments.paf
+cat alignments.paf | awk '$10/$11 > 0.9' | pafv
+samv alignments.sam
+samtools view alignments.bam | samv
+varv variants.vcf
 ```
 
 Since `tv` uses [less](https://www.greenwoodsoftware.com/less), type `q` to quit the interactive display, and you can use all of less's features, e.g. [searching](https://linuxhandbook.com/search-less-command). These functions are also quick – on my laptop, a 1 GB TSV file only takes a few seconds to load and display.
@@ -279,7 +279,7 @@ tv () {
     fi
 }
 
-pv () {
+pafv () {
     if [[ -t 0 && ! -e $1 ]]; then
         echo "Error: file '$1' does not exist" >&2
         return 1
@@ -292,7 +292,7 @@ pv () {
     } | tv
 }
 
-sv () {
+samv () {
     if [[ -t 0 && ! -e $1 ]]; then
         echo "Error: file '$1' does not exist" >&2
         return 1
@@ -304,7 +304,7 @@ sv () {
     } | tv
 }
 
-vv () {
+varv () {
     if [[ -t 0 && ! -e $1 ]]; then
         echo "Error: file '$1' does not exist" >&2
         return 1
@@ -328,6 +328,10 @@ body () {
 
 [^1]: [This blog post](https://www.stefaanlippens.net/pretty-csv.html) by Stefaan Lippens describes some functions that use the column utility.
 
-[^2]: I'm not great with Bash syntax, so I wrote this with some help from GPT-4. As of April 2023, coding with an AI assistant is still pretty new to me, but it was fun! GPT-4 often made mistakes, but it still saved me a lot of Googling and helped me write Bash code faster than I could on my own.
+[^2]: As [Antonio Camargo pointed out](https://twitter.com/apcamargo_/status/1648713930930540546), [csvtk](https://github.com/shenwei356/csvtk) can also do this. But I tested the performance of xsv and csvtk on a big file, and xsv was more than 10 times faster.
 
-[^3]: I tried to incorporate this feature, but every working solution I found had performance costs, e.g. it made the `tv` function slow on really big files. So I'm happy to just rely on stdin for compressed files.
+[^3]: I'm not great with Bash syntax, so I wrote this with some help from GPT-4. As of April 2023, coding with an AI assistant is still pretty new to me, but it was fun! GPT-4 often made mistakes, but it still saved me a lot of Googling and helped me write Bash code faster than I could on my own.
+
+[^4]: I had originally named the functions `pv`, `sv` and `vv` for brevity, but these have some conflicts ([thanks, Bram van Dijk](https://twitter.com/bramvandijk88/status/1648664773184180227)), so I've renamed them to `pafv`, `samv` and `varv`.
+
+[^5]: I tried to incorporate this feature, but every working solution I found had performance costs, e.g. it made the `tv` function slow on really big files. So I'm happy to just rely on stdin for compressed files.
