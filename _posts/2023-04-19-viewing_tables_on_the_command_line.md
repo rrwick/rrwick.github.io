@@ -66,7 +66,7 @@ tv () {
     # line. But the header line count can be provided as a number, e.g. `tv 0`
     # for no header or `tv 2` for two header lines.
     header_count=1
-    if [[ "$#" -eq 2 ]] || ([[ "$#" -eq 1 ]] && [[ ! -t 0 ]]); then
+    if [[ "$#" -eq 2 || ( "$#" -eq 1 && ! -t 0 ) ]]; then
         header_count="$1"
         shift
     fi
@@ -250,7 +250,7 @@ I hope these functions will be useful to others! If you'd like to use them, here
 # https://rrwick.github.io/2023/04/19/viewing_tables_on_the_command_line.html
 tv () {
     header_count=1
-    if [[ "$#" -eq 2 ]] || ([[ "$#" -eq 1 ]] && [[ ! -t 0 ]]); then
+    if [[ "$#" -eq 2 || ( "$#" -eq 1 && ! -t 0 ) ]]; then
         header_count="$1"
         shift
     fi
