@@ -5,7 +5,7 @@ date:   2023-04-19
 author: Ryan Wick
 ---
 
-<!-- [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.XXXXXXX.svg)](https://doi.org/10.5281/zenodo.XXXXXXX) -->
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7844352.svg)](https://doi.org/10.5281/zenodo.7844352)
 
 
 
