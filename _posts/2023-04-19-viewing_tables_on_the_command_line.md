@@ -40,7 +40,7 @@ cp target/release/xsv ~/.local/bin  # adjust as necessary based on where you wan
 wget https://www.greenwoodsoftware.com/less/less-608.tar.gz
 tar -xvf less-608.tar.gz
 cd less-608
-./configure --prefix=~/.local  # adjust as necessary based on where you want the executable
+./configure --prefix="$HOME"/.local  # adjust as necessary based on where you want the executable
 make -j
 make install
 ```
