@@ -45,7 +45,7 @@ make -j
 make install
 ```
 
-You will also need to be using GNU versions of [sed](https://www.gnu.org/software/sed) and [grep](https://www.gnu.org/software/grep). This is particularly relevant for macOS which ships with BSD versions of these tools. On my Mac, I installed the GNU versions with [Homebrew](https://brew.sh):
+You will also need to be using GNU versions of [sed](https://www.gnu.org/software/sed) and [grep](https://www.gnu.org/software/grep)[^3]. This is particularly relevant for macOS which ships with BSD versions of these tools. On my Mac, I installed the GNU versions with [Homebrew](https://brew.sh):
 ```bash
 brew install grep
 brew install gnu-sed
@@ -57,7 +57,7 @@ echo 'export PATH=/opt/homebrew/opt/grep/libexec/gnubin:"$PATH"' >> ~/.zshrc
 
 ## Bash functions
 
-I wrote[^3] a function named `tv` (for 'table viewer') and put it in my `.zshrc` file. Here it is, with an abundance of explanatory comments:
+I wrote[^4] a function named `tv` (for 'table viewer') and put it in my `.zshrc` file. Here it is, with an abundance of explanatory comments:
 ```bash
 # Table viewer: a Bash function to view TSV/CSV files/data on the command line
 tv () {
@@ -116,7 +116,7 @@ tv () {
 }
 ```
 
-And a few more related functions[^4]:
+And a few more related functions[^5]:
 * `pafv` for [PAF files](https://github.com/lh3/miniasm/blob/master/PAF.md)
 * `samv` for [SAM files](https://samtools.github.io/hts-specs/SAMv1.pdf)
 * `varv` for [VCF files](https://samtools.github.io/hts-specs/VCFv4.2.pdf)
@@ -207,7 +207,7 @@ cat data.tsv | tv
 tv < data.tsv
 ```
 
-Compressed files cannot be viewed directly[^5], so you must use stdin to view compressed files:
+Compressed files cannot be viewed directly[^6], so you must use stdin to view compressed files:
 ```bash
 tv data.tsv.gz                # will NOT work
 zcat data.tsv.gz | tv         # will work
@@ -330,8 +330,10 @@ body () {
 
 [^2]: As [Antonio Camargo pointed out](https://twitter.com/apcamargo_/status/1648713930930540546), [csvtk](https://github.com/shenwei356/csvtk) can also do this. But I tested the performance of xsv and csvtk on a big file, and xsv was more than 10 times faster.
 
-[^3]: I'm not great with Bash syntax, so I wrote this with some help from GPT-4. As of April 2023, coding with an AI assistant is still pretty new to me, but it was fun! GPT-4 often made mistakes, but it still saved me a lot of Googling and helped me write Bash code faster than I could on my own.
+[^3]: [ripgrep](https://github.com/BurntSushi/ripgrep) is another option ([suggested by Antonio Camargo](https://twitter.com/apcamargo_/status/1648821976348385283)). You'll just need to replace `grep -vP` with `rg -v` in the functions.
 
-[^4]: I had originally named the functions `pv`, `sv` and `vv` for brevity, but these have some conflicts ([thanks, Bram van Dijk](https://twitter.com/bramvandijk88/status/1648664773184180227)), so I've renamed them to `pafv`, `samv` and `varv`.
+[^4]: I'm not great with Bash syntax, so I wrote this with some help from GPT-4. As of April 2023, coding with an AI assistant is still pretty new to me, but it was fun! GPT-4 often made mistakes, but it still saved me a lot of Googling and helped me write Bash code faster than I could on my own.
 
-[^5]: I tried to incorporate this feature, but every working solution I found had performance costs, e.g. it made the `tv` function slow on really big files. So I'm happy to just rely on stdin for compressed files.
+[^5]: I had originally named the functions `pv`, `sv` and `vv` for brevity, but these have some conflicts ([thanks, Bram van Dijk](https://twitter.com/bramvandijk88/status/1648664773184180227)), so I've renamed them to `pafv`, `samv` and `varv`.
+
+[^6]: I tried to incorporate this feature, but every working solution I found had performance costs, e.g. it made the `tv` function slow on really big files. So I'm happy to just rely on stdin for compressed files.
