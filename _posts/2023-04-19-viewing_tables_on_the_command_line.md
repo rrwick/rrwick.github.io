@@ -27,7 +27,7 @@ Googling led me to some solutions based on the [column](https://man7.org/linux/m
 
 ## Prerequisites
 
-After some experimenting, I landed on an approach that uses [xsv](https://github.com/BurntSushi/xsv) to space the columns[^2] and [less](https://www.greenwoodsoftware.com/less) to view the result. But I needed to build both those tools from source: xsv has [a column alignment bug](https://github.com/BurntSushi/xsv/issues/151) that is fixed by using the latest version of the [csv](https://crates.io/crates/csv) crate, and only recent versions of less have the [header](https://unix.stackexchange.com/a/739599/316196) option.
+After some experimenting, I landed on an approach that uses [xsv](https://github.com/BurntSushi/xsv) to space the columns and [less](https://www.greenwoodsoftware.com/less) to view the result.[^2] But I needed to build both those tools from source: xsv has [a column alignment bug](https://github.com/BurntSushi/xsv/issues/151) that is fixed by using the latest version of the [csv](https://crates.io/crates/csv) crate, and only recent versions of less have the [header](https://unix.stackexchange.com/a/739599/316196) option.
 
 Assuming you have [Rust](https://www.rust-lang.org/) and command-line development tools (e.g. make and gcc) installed, here is how you can build xsv and less:
 ```bash
@@ -66,6 +66,7 @@ tv () {
     # line. But the header line count can be provided as a number, e.g. `tv 0`
     # for no header or `tv 2` for two header lines.
     header_count=1
+    jump=$(echo "$header_count+1" | bc)
     if [[ "$#" -eq 2 || ( "$#" -eq 1 && ! -t 0 ) ]]; then
         header_count="$1"
         shift
@@ -106,12 +107,12 @@ tv () {
     # first line and the remainder of the input are passed to `xsv table`. The
     # `-K` flag makes `less` quit immediately when the user presses Ctrl+C.
     if [[ "$file_input" = true ]] ; then
-        xsv table -d"$delimiter" "$1" 2>&1 | less -S -K --header "$header_count"
+        xsv table -d"$delimiter" "$1" 2>&1 | less -S -K -j "$jump" --header "$header_count"
     else
         {
             echo "$first_line"
             cat
-        } | xsv table -d"$delimiter" 2>&1 | less -S -K --header "$header_count"
+        } | xsv table -d"$delimiter" 2>&1 | less -S -K -j "$jump" --header "$header_count"
     fi
 }
 ```
@@ -250,6 +251,7 @@ I hope these functions will be useful to others! If you'd like to use them, here
 # https://rrwick.github.io/2023/04/19/viewing_tables_on_the_command_line.html
 tv () {
     header_count=1
+    jump=$(echo "$header_count+1" | bc)
     if [[ "$#" -eq 2 || ( "$#" -eq 1 && ! -t 0 ) ]]; then
         header_count="$1"
         shift
@@ -270,12 +272,12 @@ tv () {
         delimiter=","
     fi
     if [[ "$file_input" = true ]] ; then
-        xsv table -d"$delimiter" "$1" 2>&1 | less -S -K --header "$header_count"
+        xsv table -d"$delimiter" "$1" 2>&1 | less -S -K -j "$jump" --header "$header_count"
     else
         {
             echo "$first_line"
             cat
-        } | xsv table -d"$delimiter" 2>&1 | less -S -K --header "$header_count"
+        } | xsv table -d"$delimiter" 2>&1 | less -S -K -j "$jump" --header "$header_count"
     fi
 }
 
@@ -328,7 +330,7 @@ body () {
 
 [^1]: [This blog post](https://www.stefaanlippens.net/pretty-csv.html) by Stefaan Lippens describes some functions that use the column utility.
 
-[^2]: As [Antonio Camargo pointed out](https://twitter.com/apcamargo_/status/1648713930930540546), [csvtk](https://github.com/shenwei356/csvtk) can also do this. But I tested the performance of xsv and csvtk on a big file, and xsv was more than 10 times faster.
+[^2]: As [Antonio Camargo pointed out](https://twitter.com/apcamargo_/status/1648713930930540546), [csvtk](https://github.com/shenwei356/csvtk) can also work. But I tested the performance of xsv and csvtk on a big file, and xsv was more than 10 times faster. Also, thanks to Antonio for [suggesting a small fix](https://twitter.com/apcamargo_/status/1664388638766174208): the `-j` option for `less`.
 
 [^3]: [ripgrep](https://github.com/BurntSushi/ripgrep) is another option ([suggested by Antonio Camargo](https://twitter.com/apcamargo_/status/1648821976348385283)). You'll just need to replace `grep -vP` with `rg -v` in the functions.
 
