@@ -92,6 +92,17 @@ Overall, I'm very happy with these results – they show a big accuracy improvem
 
 
 
+## Read availability
+
+**1 Dec 2023 update:** I got a number of requests for the FASTQs, and I'm happy to announce that they are now available on NCBI: [PRJNA1042815](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA1042815).
+
+Note that each isolate has multiple associated SRA runs, so check the library name to make sure you're getting the one you want. The runs used in this blog post contain the following text in their library name: **2023&#8209;09_illumina**, **2023&#8209;09_nanopore_fast**, **2023&#8209;09_nanopore_hac**, **2023&#8209;09_nanopore_sup** or **2023&#8209;09_nanopore_res**.
+
+Also note that these are pre-QC reads, so many of the read sets are very large and have a poor N50. You therefore might want to do some read-length-based QC after downloading.
+
+
+
+
 ## Footnotes
 
 [^khz]: Previously, ONT sequencing generated raw data at a 4&nbsp;kHz rate (~10 samples/nucleotide). Now they use 5&nbsp;kHz sampling (~12.5 samples/nucleotide), giving basecallers a bit more data to work with.
