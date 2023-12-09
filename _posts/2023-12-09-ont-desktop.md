@@ -72,7 +72,7 @@ This plot shows the basecalling wall time (lower is better), as reported by [`ti
 
 I was very happy with Onion's performance! Extrapolating the results to a full MinION run (about 500× more data than my little test), it can complete sup basecalling in a few hours, so it's more than capable of real-time sup basecalling four simultaneous MinIONs. Also notable is that Onion basecalls at more than twice the speed of the GridION.
 
-Basecalling speed and time were mostly correlated but not perfectly so. For example, on hac and sup basecalling, Onion had the best wall time but the HPC A100 node had higher Dorado-reported basecalling speeds. Perhaps IO performance is behind that discrepancy, and a larger test (more pod5s) might give more consistent results.
+Basecalling speed and time were mostly correlated but not perfectly so. For example, on hac and sup basecalling, Onion had the best wall time but the HPC A100 node had higher Dorado-reported basecalling speeds. Perhaps IO performance is behind that discrepancy, and a larger test (more pod5s) might give more consistent results.[^a100]
 
 I was also pleasantly surprised with the performance of my MacBook (M2 Pro, 16 GPU cores, 16 GB unified memory). While it can't compete with discrete NVIDIA GPUs and sup basecalling was very slow, it could manage real-time hac basecalling for one MinION.
 
@@ -88,3 +88,5 @@ I was also pleasantly surprised with the performance of my MacBook (M2 Pro, 16 G
 [^workstation]: For comparison, I configured a computer with a Xeon W5-3435X CPU, 128 GB of ECC RAM and an RTX 6000 Ada GPU on Aftershock's site. I think this would perform about the same as Onion, and it cost almost 24000 AUD.
 
 [^root]: [This post](https://community.nanoporetech.com/posts/update-and-installation-is) on the ONT community site details how to fix this. Searching for 'minknow.service' on the community site yields other posts with similar problems/solutions.
+
+[^a100]: After I initially posted this, [Mike Vella clarified](https://twitter.com/vellamike/status/1733296996914446673) that an A100 should indeed be faster than an RTX 4090, and the discrepancy I saw (better wall time with Onion) is indeed due to IO performance and the small scale (just one pod5 file) of my test.
