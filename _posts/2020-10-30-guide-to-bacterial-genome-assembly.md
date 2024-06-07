@@ -2,7 +2,7 @@
 layout:        post
 title:         "Choose-your-own-adventure guide to bacterial genome assembly"
 date:          2020-10-30
-modified_date: 2021-10-19
+modified_date: 2024-06-08
 author:        Ryan Wick
 ---
 
@@ -31,6 +31,7 @@ This guide was originally posted on the [Trycycler wiki](https://github.com/rrwi
 * November 2020: added comments about PacBio HiFi reads.
 * February 2021: removed Shasta as a long-read assembler (too many errors).
 * October 2021: changed short-read polishing instructions from Pilon to Polypolish/POLCA.
+* June 2024: updated Unicycler commands and replaced POLCA with Pypolca.
 
 <br>
 
@@ -135,14 +136,10 @@ For short-read-only assemblies, Unicycler just runs SPAdes and then adds few ext
 
 I usually run it like this:
 ```bash
-unicycler -1 short_1.fastq.gz -2 short_2.fastq.gz -s short_u.fastq.gz -o unicycler_assembly --threads 16 --no_correct --no_pilon
+unicycler -1 short_1.fastq.gz -2 short_2.fastq.gz -s short_u.fastq.gz -o unicycler_assembly --threads 16
 ```
 
 Unicycler will produce its final assembly in FASTA format (`assembly.fasta`) and as a graph (`assembly.gfa`). They contain identical sequences, except the `assembly.fasta` file has very short (<100 bp by default) contigs excluded.
-
-I have found that read error correction isn't needed, especially if you do some read QC beforehand, hence my use of the `--no_correct` option. Also, I'm not convinced that [Pilon-polishing](https://github.com/broadinstitute/pilon) for a short-read-only assembly it worth it, so I tend to use `--no_pilon` which saves a lot of time. Remove this option if you want to turn polishing back on.
-
-One mild annoyance to keep in mind: SPAdes changed its output files in v3.13.1 which made it incompatible with Unicycler, so you'll have to downgrade SPAdes to [v3.13.0](http://cab.spbu.ru/files/release3.13.0).
 
 You're now finished! __THE END__
 
@@ -331,12 +328,12 @@ Unicycler works by first generating a short-read assembly graph and then using l
 
 Run a Unicycler hybrid assembly like this:
 ```bash
-unicycler -1 short_1.fastq.gz -2 short_2.fastq.gz -s short_u.fastq.gz -l long.fastq.gz -o unicycler_assembly --threads 16 --no_correct
+unicycler -1 short_1.fastq.gz -2 short_2.fastq.gz -s short_u.fastq.gz -l long.fastq.gz -o unicycler_assembly --threads 16
 ```
 
 After making a short-read assembly graph, Unicycler tries to assign a multiplicity value to each contig: a multiplicity of 1 means single-copy (the contig occurs once in the genome) while a multiplicity of 2 or more means repeat (the contig occurs more than once in the genome). If Unicycler makes a mistake in this step, it can cause problems with the scaffolding which lead to an incomplete assembly. This is one of the most common reasons that Unicycler fails to completely assemble a nice hybrid read set. You therefore might want to check the double-check the multiplicity and fix any errors you see. Read more about this on [Unicycler's wiki](https://github.com/rrwick/Unicycler/wiki/Multiplicity-mistake).
 
-Since Unicycler runs Pilon as part of its pipeline, it should not be necessary to polish its final assembly. When Unicycler is done, then you're finished! __THE END__
+You're now finished! __THE END__
 
 <br>
 
@@ -367,9 +364,9 @@ If both your short-read and long-read sets are shallow, then you're in a tough s
 
 Even after long-read polishing, there are still probably some errors in your bacterial genome, mainly homopolymer-length errors. Since Illumina reads don't suffer from the same types of errors, you can use short-read polishing to clean these up and get a very accurate assembly.
 
-[Polypolish](https://github.com/rrwick/Polypolish) is a tool I've written for this purpose, and I also quite like [POLCA](https://github.com/alekseyzimin/masurca#polca). I've written more about short-read polishing in Trycycler's wiki, so follow the instructions there: [Polishing after Trycycler](https://github.com/rrwick/Trycycler/wiki/Polishing-after-Trycycler).
+[Polypolish](https://github.com/rrwick/Polypolish) is a tool I've written for this purpose, and I also quite like [Pypolca](https://github.com/gbouras13/pypolca). I've written more about short-read polishing in Trycycler's wiki, so follow the instructions there: [Polishing after Trycycler](https://github.com/rrwick/Trycycler/wiki/Polishing-after-Trycycler).
 
-Can short-read polishing make your genome perfect, i.e. with absolutely no errors? If your read sets were good and there were no complications along the way, then I think this is definitely possible but not guaranteed. The most challenging errors to fix are those in repeats, and they can be minimised by getting your assembly as good as possible before short-read polishing. This is why long-read polishing is important (e.g. Trycyler+Medaka+Polypolish+POLCA should do better than Trycycler+Polypolish+POLCA).
+Can short-read polishing make your genome perfect, i.e. with absolutely no errors? If your read sets were good and there were no complications along the way, then I think this is definitely possible but not guaranteed. The most challenging errors to fix are those in repeats, and they can be minimised by getting your assembly as good as possible before short-read polishing. This is why long-read polishing is important (e.g. Trycyler+Medaka+Polypolish+Pypolca should do better than Trycycler+Polypolish+Pypolca).
 
 After short-read polishing:
 * If you don't care about small plasmids (or if you happen to know that your genome doesn't contain small plasmids), then you're finished! __THE END__
@@ -385,8 +382,6 @@ After short-read polishing:
 Small plasmids can sometimes be underrepresented in long-read sets, especially if your read lengths are long and you used a ligation-based sample prep (read more about this in the [appendix below](#long-read-sequencing)). This means that your assembled genome could be missing one or more small plasmids if you've done a long-read-first hybrid assembly.
 
 To solve this problem, I'd recommend you do a Unicycler hybrid assembly (see [step 17](#17-unicycler-hybrid-assembly)) of your genome. See if any small plasmids appear in the Unicycler assembly that aren't in your long-read-first assembly. If so, manually copy them over and then you're finished! __THE END__
-
-
 
 <br>
 
@@ -433,7 +428,7 @@ Small plasmids can be a problem with long-read sequencing. Consider a genome wit
 
 #### Hybrid sequencing
 
-Hybrid sequencing refers to getting both short and long reads from the sample isolate. This can give you the best of both worlds! Pretty much all downstream analyses will be available to you. Having a nice hybrid read set will also allow you to make a very high-quality assembly, perfect for creating reference genomes. It will also solve the small plasmid problem described above. Specifically, I would recommend you produce a deep (>100×) long-read set and a medium (\~50×) short-read set. This will allow you to perform a long-read-first hybrid assembly (e.g. Trycycler+Medaka+Polypolish+POLCA), which in my experience is the most accurate.
+Hybrid sequencing refers to getting both short and long reads from the sample isolate. This can give you the best of both worlds! Pretty much all downstream analyses will be available to you. Having a nice hybrid read set will also allow you to make a very high-quality assembly, perfect for creating reference genomes. It will also solve the small plasmid problem described above. Specifically, I would recommend you produce a deep (>100×) long-read set and a medium (\~50×) short-read set. This will allow you to perform a long-read-first hybrid assembly (e.g. Trycycler+Medaka+Polypolish+Pypolca), which in my experience is the most accurate.
 
 I strongly encourage you to grow and extract the DNA only once for each isolate, using the same DNA for both short-read and long-read sequencing. This way you can be certain that the two read sets are in exact agreement and avoid the problems described in the [hybrid read set mismatch](#appendix-hybrid-read-set-mismatch) appendix.
 
