@@ -30,6 +30,7 @@ url: https://rrwick.github.io
 
 # Build settings
 theme: minima
+future: true
 plugins:
   - jekyll-feed
   - jekyll-remote-theme
