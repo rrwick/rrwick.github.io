@@ -21,7 +21,7 @@ In both scenarios, all of the reads ultimately contribute to the consensus seque
 
 ## Methods
 
-For this test, I used three strains from [Michael Hall's ONT variant-calling paper](https://www.biorxiv.org/content/10.1101/2024.03.15.585313v2)[^strains]. Each has a good ONT read set and an Illumina-polished curated assembly to use as ground truth:
+For this test, I used three strains from [Michael Hall's ONT variant-calling paper](https://elifesciences.org/reviewed-preprints/98300)[^strains]. Each has a good ONT read set and an Illumina-polished curated assembly to use as ground truth:
 * [_Klebsiella variicola_ AJ292](https://ncbi.nlm.nih.gov/biosample/SAMN40453079)
 * [_Staphylococcus aureus_ BPH2947](https://ncbi.nlm.nih.gov/biosample/SAMN40453078)
 * [_Streptococcus pyogenes_ RDH275](https://ncbi.nlm.nih.gov/biosample/SAMN40453081)
