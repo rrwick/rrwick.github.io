@@ -66,7 +66,7 @@ Other notes:
 | Medaka-sup                      |             100 |             Q56.5 |                      0:01:44 |         7.1 |
 | Dorado-bac                      |              25 |             Q62.5 |                      0:03:30 |        10.3 |
 | Dorado-sup                      |             203 |             Q53.4 |                      1:00:35 |        46.5 |
-| Dorado-sup-mv                   |             101 |              56.5 |                      1:02:23 |        46.7 |
+| Dorado-sup-mv                   |             101 |             Q56.5 |                      1:02:23 |        46.7 |
 
 * __Total errors__: Sum of all errors across the 10 genomes. Per-genome results are in the figure below.
 * __Overall qscore__: Calculated from total errors and total genome size (44.9 Mbp).
