@@ -98,7 +98,7 @@ One more interesting feature of Dorado polish: it has a `--qualities` option whi
 
 [^species]: The genomes are _Enterobacter hormaechei_, _Enterobacter kobei_, _Escherichia coli_, _Klebsiella planticola_, _Klebsiella pneumoniae_, _Listeria innocua_, _Listeria monocytogenes_, _Listeria seeligeri_, _Providencia rettgeri_ and _Shigella flexneri_. And yes, I know that _Shigella_ is technically _E. coli_, so that's really only nine unique species.
 
-[^faster]: When I [last tested](https://rrwick.github.io/2024/08/16/springonion.html) Dorado's speed on an NVIDIA A100 GPU, it basecalled at 6.76e+06 samples/sec. This time, it basecalled at 1.04e+07 samples/sec.
+[^faster]: When I [last tested](https://rrwick.github.io/2024/08/16/springonion.html) Dorado's speed on an NVIDIA A100 GPU, it basecalled at 6.76e+06 samples/sec. This time, it basecalled at 1.04e+07 samples/sec. Also see the Feb 2025 update in my [Spring OnION post](https://rrwick.github.io/2024/08/16/springonion.html).
 
 [^fixlarge]: I manually corrected large indels because polishing tools are expected to fix small errors but not necessarily large structural errors. After corrections, all remaining errors in my draft assemblies were either substitutions or indels of ≤10 bp.
 
