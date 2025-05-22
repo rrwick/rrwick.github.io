@@ -2,6 +2,7 @@
 layout: post
 title:  "Duplex basecalling for whole-genome assembly"
 date:   2024-05-08
+modified_date: 2025-05-22
 author: Ryan Wick
 ---
 
@@ -69,6 +70,12 @@ For most of the assemblers, duplex reads usually delivered assemblies with fewer
 These results are enough to make me tentatively recommend using duplex basecalling when possible. However, at the time of writing, `dorado duplex` is missing some key features: it cannot demultiplex or trim adapters/barcodes. These features are sorely missed for bacterial WGS runs which are usually barcoded, so I hope they are added in future versions of Dorado.
 
 This blog post only scratches the surface – I still have lots of questions about duplex basecalling in the context of assembly. Exactly why do duplex reads seem to help with assembly accuracy? Perhaps they are better at getting homopolymers right, a common source of ONT consensus errors. Perhaps they help solve strand-specific errors, tipping the consensus to the correct sequence.[^strand] Do higher duplex rates further improve accuracy? I also wonder if tools might benefit from being duplex-aware, e.g. an assembler that could recognise duplex reads and give them more weight in its consensus algorithm.
+
+
+
+## May 2025 update
+
+I've recently heard that ONT is deprecating duplex basecalling – not surprising given their recent silence on the topic. This is now the third time (after 2D and 1D<sup>2</sup>) that ONT has tried and dropped both-strand basecalling! So it seems that mixed simplex-duplex read sets like the ones in this post will end up a historical curiosity rather than a standard part of ONT sequencing.
 
 
 
