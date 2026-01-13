@@ -2,10 +2,11 @@
 layout: post
 title:  "Viewing tables on the command line"
 date:   2023-04-19
+modified_date: 2026-01-12
 author: Ryan Wick
 ---
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7844352.svg)](https://doi.org/10.5281/zenodo.7844352)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7844351.svg)](https://doi.org/10.5281/zenodo.7844351)
 
 
 
@@ -21,31 +22,25 @@ These are the features I want in a command-line TSV viewer:
 * Also works on CSV files.
 * Lets you use [less](https://www.greenwoodsoftware.com/less) features like searching.
 
-Googling led me to some solutions based on the [column](https://man7.org/linux/man-pages/man1/column.1.html) utility[^1], but I couldn't get all of the above features, so I had to write my own Bash functions.
+Googling led me to some solutions based on the [column](https://man7.org/linux/man-pages/man1/column.1.html) utility[^column], but I couldn't get all of the above features, so I had to write my own Bash functions.
 
 
 
 ## Prerequisites
 
-After some experimenting, I landed on an approach that uses [xsv](https://github.com/BurntSushi/xsv) to space the columns and [less](https://www.greenwoodsoftware.com/less) to view the result.[^2] But I needed to build both those tools from source: xsv has [a column alignment bug](https://github.com/BurntSushi/xsv/issues/151) that is fixed by using the latest version of the [csv](https://crates.io/crates/csv) crate, and only recent versions of less have the [header](https://unix.stackexchange.com/a/739599/316196) option.
+After some experimenting, I landed on an approach that uses [qsv](https://github.com/dathere/qsv) to space the columns and [less](https://www.greenwoodsoftware.com/less) to view the result.[^lessj] The [qsv GitHub releases](https://github.com/dathere/qsv/releases) come with pre-compiled binaries for many systems, which makes it easy to install. However, only recent versions of less have the [header](https://unix.stackexchange.com/a/739599/316196) option, so you might need to install a fresh version.
 
-Assuming you have [Rust](https://www.rust-lang.org/) and command-line development tools (e.g. make and gcc) installed, here is how you can build xsv and less:
+Assuming you have command-line development tools (e.g. `make` and `gcc`) installed, here is how you can build the current recommended version of less (685 at the time of writing):
 ```bash
-git clone https://github.com/BurntSushi/xsv
-cd xsv
-sed -i 's/csv = "1"/csv = "1.2"/' Cargo.toml  # ensure latest version of csv crate
-cargo build --release
-cp target/release/xsv ~/.local/bin  # adjust as necessary based on where you want the executable
-
-wget https://www.greenwoodsoftware.com/less/less-608.tar.gz
-tar -xvf less-608.tar.gz
-cd less-608
+wget https://www.greenwoodsoftware.com/less/less-685.tar.gz
+tar -xvf less-685.tar.gz
+cd less-685
 ./configure --prefix="$HOME"/.local  # adjust as necessary based on where you want the executable
 make -j
 make install
 ```
 
-You will also need to be using GNU versions of [sed](https://www.gnu.org/software/sed) and [grep](https://www.gnu.org/software/grep)[^3]. This is particularly relevant for macOS which ships with BSD versions of these tools. On my Mac, I installed the GNU versions with [Homebrew](https://brew.sh):
+You will also need GNU versions of [sed](https://www.gnu.org/software/sed) and [grep](https://www.gnu.org/software/grep)[^ripgrep]. This is particularly relevant for macOS which ships with BSD versions of these tools. On my Mac, I installed the GNU versions with [Homebrew](https://brew.sh):
 ```bash
 brew install grep
 brew install gnu-sed
@@ -57,7 +52,7 @@ echo 'export PATH=/opt/homebrew/opt/grep/libexec/gnubin:"$PATH"' >> ~/.zshrc
 
 ## Bash functions
 
-I wrote[^4] a function named `tv` (for 'table viewer') and put it in my `.zshrc` file. Here it is, with an abundance of explanatory comments:
+I wrote[^gpt] a function named `tv` (for 'table viewer') and put it in my `.zshrc` file. Here it is, with an abundance of explanatory comments:
 ```bash
 # Table viewer: a Bash function to view TSV/CSV files/data on the command line
 tv () {
@@ -66,18 +61,18 @@ tv () {
     # line. But the header line count can be provided as a number, e.g. `tv 0`
     # for no header or `tv 2` for two header lines.
     header_count=1
-    jump=$(echo "$header_count+1" | bc)
     if [[ "$#" -eq 2 || ( "$#" -eq 1 && ! -t 0 ) ]]; then
         header_count="$1"
         shift
     fi
+    jump=$((header_count + 1))
 
     # If being run on a file (not stdin), make sure the file exists.
-    if [[ -t 0 && ! -e $1 ]]; then
+    if [[ -t 0 && ! -e "$1" ]]; then
         echo "Error: file '$1' does not exist" >&2
         return 1
     fi
-    
+
     # This function can be run on a file or on stdin. For file inputs, the
     # first line is gotten using `head`. For stdin inputs, the first line is
     # gotten using the `read` command. The input type is stored in the
@@ -87,7 +82,7 @@ tv () {
         first_line=$(head -n1 "$1")
     else
         file_input=false
-        read -r first_line
+        IFS= read -r first_line
     fi
 
     # This function works on both TSV (tab-delimited) and CSV (comma-delimited)
@@ -99,25 +94,25 @@ tv () {
         delimiter=","
     fi
 
-    # The `xsv table` command is used to space the columns nicely, and `less`
+    # The `qsv table` command is used to space the columns nicely, and `less`
     # is used to view the result in an interactive manner. `2>&1` is used with
-    # `xsv table` to ensure that error messages (e.g. inconsistent column
+    # `qsv table` to ensure that error messages (e.g. inconsistent column
     # counts) appear in the interactive view (otherwise they would not be seen
     # until exiting `less`). If the function's input is from stdin, both the 
-    # first line and the remainder of the input are passed to `xsv table`. The
+    # first line and the remainder of the input are passed to `qsv table`. The
     # `-K` flag makes `less` quit immediately when the user presses Ctrl+C.
     if [[ "$file_input" = true ]] ; then
-        xsv table -d"$delimiter" "$1" 2>&1 | less -S -K -j "$jump" --header "$header_count"
+        qsv table -d"$delimiter" "$1" 2>&1 | less -S -K -j "$jump" --header "$header_count"
     else
         {
-            echo "$first_line"
+            printf '%s\n' "$first_line"
             cat
-        } | xsv table -d"$delimiter" 2>&1 | less -S -K -j "$jump" --header "$header_count"
+        } | qsv table -d"$delimiter" 2>&1 | less -S -K -j "$jump" --header "$header_count"
     fi
 }
 ```
 
-And a few more related functions[^5]:
+And a few more related functions[^names]:
 * `pafv` for [PAF files](https://github.com/lh3/miniasm/blob/master/PAF.md)
 * `samv` for [SAM files](https://samtools.github.io/hts-specs/SAMv1.pdf)
 * `varv` for [VCF files](https://samtools.github.io/hts-specs/VCFv4.2.pdf)
@@ -126,7 +121,7 @@ And a few more related functions[^5]:
 ```bash
 # PAF viewer: a Bash function to view PAF files/data on the command line
 pafv () {
-    if [[ -t 0 && ! -e $1 ]]; then
+    if [[ -t 0 && ! -e "$1" ]]; then
         echo "Error: file '$1' does not exist" >&2
         return 1
     fi
@@ -149,7 +144,7 @@ pafv () {
 
 # SAM viewer: a Bash function to view SAM/BAM files/data on the command line
 samv () {
-    if [[ -t 0 && ! -e $1 ]]; then
+    if [[ -t 0 && ! -e "$1" ]]; then
         echo "Error: file '$1' does not exist" >&2
         return 1
     fi
@@ -172,7 +167,7 @@ samv () {
 
 # VCF viewer: a Bash function to view VCF files/data on the command line
 varv () {
-    if [[ -t 0 && ! -e $1 ]]; then
+    if [[ -t 0 && ! -e "$1" ]]; then
         echo "Error: file '$1' does not exist" >&2
         return 1
     fi
@@ -208,11 +203,10 @@ cat data.tsv | tv
 tv < data.tsv
 ```
 
-Compressed files cannot be viewed directly[^6], so you must use stdin to view compressed files:
+Compressed files cannot be viewed directly[^compressed], so you must use stdin to view compressed files:
 ```bash
-tv data.tsv.gz                # will NOT work
-zcat data.tsv.gz | tv         # will work
-bunzip2 -c data.tsv.bz2 | tv  # will work
+zcat data.tsv.gz | tv
+bunzip2 -c data.tsv.bz2 | tv
 ```
 
 Include a number after `tv` to change the header line count (defaults to 1):
@@ -240,7 +234,7 @@ varv variants.vcf
 
 Since `tv` uses [less](https://www.greenwoodsoftware.com/less), type `q` to quit the interactive display, and you can use all of less's features, e.g. [searching](https://linuxhandbook.com/search-less-command). These functions are also quick – on my laptop, a 1 GB TSV file only takes a few seconds to load and display.
 
-These functions work for me on macOS and Linux, and while I use Zsh as my main shell, I also tested the functions in Bash. So assuming you meet the prerequisites (e.g. GNU sed and grep, see above), I think they will work most Unix-like systems.
+These functions work for me on macOS and Linux, and while I use Zsh as my main shell, I also tested the functions in Bash. So assuming you meet the prerequisites (e.g. GNU sed and grep, see above), I think they will work on most Unix-like systems.
 
 I hope these functions will be useful to others! If you'd like to use them, here they are without the comments for you to put in your shell's configuration file:
 
@@ -251,12 +245,12 @@ I hope these functions will be useful to others! If you'd like to use them, here
 # https://rrwick.github.io/2023/04/19/viewing_tables_on_the_command_line.html
 tv () {
     header_count=1
-    jump=$(echo "$header_count+1" | bc)
     if [[ "$#" -eq 2 || ( "$#" -eq 1 && ! -t 0 ) ]]; then
         header_count="$1"
         shift
     fi
-    if [[ -t 0 && ! -e $1 ]]; then
+    jump=$((header_count + 1))
+    if [[ -t 0 && ! -e "$1" ]]; then
         echo "Error: file '$1' does not exist" >&2
         return 1
     fi
@@ -265,24 +259,24 @@ tv () {
         first_line=$(head -n1 "$1")
     else
         file_input=false
-        read -r first_line
+        IFS= read -r first_line
     fi
     delimiter="\t"
     if [[ ! $first_line == *$'\t'* && $first_line == *,* ]]; then
         delimiter=","
     fi
     if [[ "$file_input" = true ]] ; then
-        xsv table -d"$delimiter" "$1" 2>&1 | less -S -K -j "$jump" --header "$header_count"
+        qsv table -d"$delimiter" "$1" 2>&1 | less -S -K -j "$jump" --header "$header_count"
     else
         {
-            echo "$first_line"
+            printf '%s\n' "$first_line"
             cat
-        } | xsv table -d"$delimiter" 2>&1 | less -S -K -j "$jump" --header "$header_count"
+        } | qsv table -d"$delimiter" 2>&1 | less -S -K -j "$jump" --header "$header_count"
     fi
 }
 
 pafv () {
-    if [[ -t 0 && ! -e $1 ]]; then
+    if [[ -t 0 && ! -e "$1" ]]; then
         echo "Error: file '$1' does not exist" >&2
         return 1
     fi
@@ -295,7 +289,7 @@ pafv () {
 }
 
 samv () {
-    if [[ -t 0 && ! -e $1 ]]; then
+    if [[ -t 0 && ! -e "$1" ]]; then
         echo "Error: file '$1' does not exist" >&2
         return 1
     fi
@@ -307,7 +301,7 @@ samv () {
 }
 
 varv () {
-    if [[ -t 0 && ! -e $1 ]]; then
+    if [[ -t 0 && ! -e "$1" ]]; then
         echo "Error: file '$1' does not exist" >&2
         return 1
     fi
@@ -325,17 +319,26 @@ body () {
 
 
 
+## 2026 update
+
+The original version of this post used [xsv](https://github.com/BurntSushi/xsv) to align the columns, but since that post, xsv has been labelled as unmaintained. Also, there was a small bug in an xsv dependency, necessitating building the tool from source, which wasn't ideal.
+
+In Jan 2026, I tested various possible replacements for xsv. Both [csvtk](https://github.com/shenwei356/csvtk) and [xan](https://github.com/medialab/xan) can do the column alignment, but they were about 10× slower, so not ideal for very large files. However, [qsv](https://github.com/dathere/qsv) was a perfect drop-in replacement for xsv and slightly faster!
+
+So I've updated the above post to use qsv. If you're interested in the old version that uses xsv, you can find it [on Zenodo](https://doi.org/10.5281/zenodo.7844352).
+
+
 
 ## Footnotes
 
-[^1]: [This blog post](https://www.stefaanlippens.net/pretty-csv.html) by Stefaan Lippens describes some functions that use the column utility.
+[^column]: [This blog post](https://www.stefaanlippens.net/pretty-csv.html) by Stefaan Lippens describes some functions that use the column utility.
 
-[^2]: As [Antonio Camargo pointed out](https://twitter.com/apcamargo_/status/1648713930930540546), [csvtk](https://github.com/shenwei356/csvtk) can also work. But I tested the performance of xsv and csvtk on a big file, and xsv was more than 10 times faster. Also, thanks to Antonio for [suggesting a small fix](https://twitter.com/apcamargo_/status/1664388638766174208): the `-j` option for `less`.
+[^lessj]: Thanks to Antonio Camargo for suggesting a small fix: the `-j` option for `less`.
 
-[^3]: [ripgrep](https://github.com/BurntSushi/ripgrep) is another option ([suggested by Antonio Camargo](https://twitter.com/apcamargo_/status/1648821976348385283)). You'll just need to replace `grep -vP` with `rg -v` in the functions.
+[^ripgrep]: [ripgrep](https://github.com/BurntSushi/ripgrep) is another option (suggested by Antonio Camargo). You'll just need to replace `grep -vP` with `rg -v` in the functions.
 
-[^4]: I'm not great with Bash syntax, so I wrote this with some help from GPT-4. As of April 2023, coding with an AI assistant is still pretty new to me, but it was fun! GPT-4 often made mistakes, but it still saved me a lot of Googling and helped me write Bash code faster than I could on my own.
+[^gpt]: I'm not great with Bash syntax, so I wrote this with some help from GPT-4. As of April 2023, coding with an AI assistant is still pretty new to me, but it was fun! GPT-4 often made mistakes, but it still saved me a lot of Googling and helped me write Bash code faster than I could on my own.
 
-[^5]: I had originally named the functions `pv`, `sv` and `vv` for brevity, but these have some conflicts ([thanks, Bram van Dijk](https://twitter.com/bramvandijk88/status/1648664773184180227)), so I've renamed them to `pafv`, `samv` and `varv`.
+[^names]: I had originally named the functions `pv`, `sv` and `vv` for brevity, but these have some conflicts (thanks, Bram van Dijk), so I've renamed them to `pafv`, `samv` and `varv`.
 
-[^6]: I tried to incorporate this feature, but every working solution I found had performance costs, e.g. it made the `tv` function slow on really big files. So I'm happy to just rely on stdin for compressed files.
+[^compressed]: I tried to incorporate this feature, but every working solution I found had performance costs, e.g. it made the `tv` function slow on really big files. So I'm happy to just rely on stdin for compressed files.
