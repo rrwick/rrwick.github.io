@@ -44,12 +44,13 @@ minima:
   date_format: "%-d %b %Y"
   social_links:
 
-    - { title: GitHub, platform: github,  user_url: "https://github.com/rrwick" }
+    - { title: GitHub, platform: github, user_url: "https://github.com/rrwick" }
     - { title: X, platform: twitter, user_url: "https://twitter.com/rrwick" }
     - { title: Bluesky, platform: bluesky, user_url: "https://bsky.app/profile/rrwick.bsky.social" }
     - { title: Mastodon, platform: mastodon, user_url: "https://genomic.social/@rrwick" }
     - { title: Google Scholar, platform: google_scholar, user_url: "https://scholar.google.com.au/citations?user=Bwv5CQYAAAAJ" }
     - { title: ORCID, platform: orcid, user_url: "https://orcid.org/0000-0001-8349-0778" }
+    - { title: LinkedIn, platform: linkedin, user_url: "https://www.linkedin.com/in/rrwick" }
 
 # Exclude from processing.
 # The following items will not be processed, by default.
