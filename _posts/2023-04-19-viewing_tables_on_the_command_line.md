@@ -98,11 +98,12 @@ tv () {
     # is used to view the result in an interactive manner. `2>&1` is used with
     # `qsv table` to ensure that error messages (e.g. inconsistent column
     # counts) appear in the interactive view (otherwise they would not be seen
-    # until exiting `less`). If the function's input is from stdin, both the 
-    # first line and the remainder of the input are passed to `qsv table`. The
-    # `-K` flag makes `less` quit immediately when the user presses Ctrl+C.
+    # until exiting `less`). `QSV_SKIP_FORMAT_CHECK=1` ensures that it will run
+    # on all files. If the function's input is from stdin, both the first line
+    # and the remainder of the input are passed to `qsv table`. The `-K` flag
+    # makes `less` quit immediately when the user presses Ctrl+C.
     if [[ "$file_input" = true ]] ; then
-        qsv table -d"$delimiter" "$1" 2>&1 | less -S -K -j "$jump" --header "$header_count"
+        QSV_SKIP_FORMAT_CHECK=1 qsv table -d"$delimiter" "$1" 2>&1 | less -S -K -j "$jump" --header "$header_count"
     else
         {
             printf '%s\n' "$first_line"
@@ -266,7 +267,7 @@ tv () {
         delimiter=","
     fi
     if [[ "$file_input" = true ]] ; then
-        qsv table -d"$delimiter" "$1" 2>&1 | less -S -K -j "$jump" --header "$header_count"
+        QSV_SKIP_FORMAT_CHECK=1 qsv table -d"$delimiter" "$1" 2>&1 | less -S -K -j "$jump" --header "$header_count"
     else
         {
             printf '%s\n' "$first_line"
