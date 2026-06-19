@@ -67,11 +67,11 @@ But there were cases where assemblies got _worse_ with polishing. The table belo
 
 The same pattern appears when looking at individual polishing changes. Most polishing changes were improvements (removed an error), but some polishing changes were degradations (added an error):
 
-| Polishing model | Improvements | Degradations | Neutral |
-|:---------------:|:------------:|:------------:|:-------:|
-| bacterial       |     1615     |      300     |    18   |
-| RL              |     1275     |      604     |    20   |
-| RL+moves        |     1288     |      587     |    21   |
+| Polishing model | Degradations | Neutral | Improvements |
+|:---------------:|:------------:|:-------:|:------------:|
+| bacterial       |      300     |    18   |     1615     |
+| RL              |      604     |    20   |     1275     |
+| RL+moves        |      587     |    21   |     1288     |
 
 
 
