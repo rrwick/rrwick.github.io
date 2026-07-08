@@ -2,6 +2,7 @@
 layout: post
 title:  "Dorado v2.0.0 part 2: assembly polishing"
 date:   2026-06-19
+modified_date: 2026-07-09
 author: Ryan Wick
 ---
 
@@ -80,6 +81,8 @@ The same pattern appears when looking at individual polishing changes. Most poli
 As I saw in the last post, when the [results are separated by species](/assets/images/dorado-v2_polishing_by_species.png), the _Klebsiella_ genome stands out: it has far more errors than the other genomes, and polishing with the read-level models produced little or no improvement in assembly quality (though the bacterial model still did).
 
 Mike Vella (VP of Machine Learning at Oxford Nanopore) emailed me with a possible explanation: these errors could be due to phosphorothioate modifications which were absent from their latest training run. This is where an oxygen atom in the DNA backbone is replaced with sulfur.[^ptmod] While not a _base_ modification, it can presumably still affect the raw ONT signal (the squiggle) and therefore impact basecalling. Mike let me know that ONT is working on an updated `dorado polish` model to correct this, so I'll keep an eye out for that.[^training]
+
+**9 July 2026 update:**  As I said in the footnote, I didn't find a _dnd_ gene cluster in this genome, so phosphorothioate mods were never a great fit. But Michael Biggel (University of Zurich) emailed me and suggested I look for the _dpd_ system which does 7-deazaguanine mods, and this was indeed in the _Klebsiella_ genome. So I think this mystery is now solved: 7-deazaguanine modifications from the _dpd_ system are causing the higher error rate. Thanks to Michael for figuring this one out and letting me know. Here's a link to his preprint which covers this: [Standalone nanopore sequencing for foodborne pathogen surveillance: a large-scale evaluation and quality control framework](https://www.biorxiv.org/content/10.64898/2026.03.20.713089v2).
 
 
 
