@@ -32,7 +32,7 @@ For a detailed breakdown of error types, see this updated Figure S1: <a href="/a
 This is an updated Figure S5, showing runtime and memory usage (lower is better):
 <p align="center"><picture><source srcset="/assets/images/autocycler_update_2_figure_s5-dark.png" media="(prefers-color-scheme: dark)"><img src="/assets/images/autocycler_update_2_figure_s5.png" alt="Autocycler benchmark updated results" width="100%"></picture></p>
 
-And for the tools with updated versions, here are some plots that show their metrics across versions: <a href="/assets/images/autocycler_update_2_hybracter.png" target="_blank">Hybracter</a>, <a href="/assets/images/autocycler_update_2_metaMDBG.png" target="_blank">metaMDBG</a> and <a href="/assets/images/autocycler_update_2_myloasm.png" target="_blank">Myloasm</a>.[^versions]
+And for the tools with updated versions, here are some plots that show their metrics across versions: <a href="/assets/images/autocycler_update_2_hybracter.png" target="_blank">Hybracter</a>, <a href="/assets/images/autocycler_update_2_metamdbg.png" target="_blank">metaMDBG</a> and <a href="/assets/images/autocycler_update_2_myloasm.png" target="_blank">Myloasm</a>.[^versions]
 
 
 
